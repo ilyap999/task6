@@ -1,4 +1,16 @@
 fun main() {
+    var array = emptyArray<Attachment>()
+    array += PhotoAttachment("photo", Photo(1, 1, 1, 1, "фото 1", 800,
+        null, 800, 600))
+    array += EventAttachment("event" , Event(1, 3600, 1, true, "какой-то адрес",
+        "Встреча","Встреча",null))
+    val service = WallService()
+    val post = service.add(Post(1,10,11,200,300,"First post",4,5,
+        false, Comments(3,true,true,true,true),
+        Copyright(1,"link1","name1","type1"), Likes(321,true,true,true),
+        Reposts(8,true),Views(220),"post",300,true,true,
+        false,false,false,true,Donut(true,500,
+            "Ivanov",true,"edit"),8, null, null, null, array))
 
 }
 
@@ -51,7 +63,8 @@ data class Post(
     val postponedId: Int,
     val postSource: PostSource?,
     val geo: Geo?,
-    val copyHistory: Array<Post>?
+    val copyHistory: Array<Post>?,
+    val attachments: Array<Attachment>?
 )
 
 data class Comments(
@@ -120,3 +133,89 @@ data class Geo(
     val coordinates: String,
     val place: Place?
 )
+
+interface Attachment {
+    val type: String
+}
+
+data class PhotoAttachment(override val type: String = "photo", val photo: Photo) : Attachment
+
+data class Photo(
+    val id: Int,
+    val albumId: Int,
+    val ownerId: Int,
+    val userId: Int,
+    val text: String,
+    val date: Int,
+    val sizes: Array<SizesPhoto>?,
+    val width: Int,
+    val height: Int
+    )
+
+data class SizesPhoto(
+    val type: String,
+    val url: String,
+    val width: Int,
+    val height: Int
+)
+
+data class PostedPhotoAttachment(override val type: String = "posted_photo", val postedPhoto: PostedPhoto) : Attachment
+
+data class PostedPhoto(
+    val id: Int,
+    val ownerId: Int,
+    val photo130: String,
+    val photo604: String
+    )
+
+data class AudioAttachment(override val type: String = "audio", val audio: Audio) : Attachment
+
+data class Audio(
+    val id: Int,
+    val ownerId: Int,
+    val artist: String,
+    val title: String,
+    val duration: Int,
+    val url: String,
+    val lyricsId: Int,
+    val albumId: Int,
+    val genreId: Int,
+    val date: Int,
+    val noSearch: Boolean,
+    val isHd: Boolean
+    )
+
+data class PageAttachment(override val type: String = "page", val page: Page) : Attachment
+
+data class Page(
+    val id: Int,
+    val groupId: Int,
+    val creatorId: Int,
+    val title: String,
+    val currentUserCanEdit: Boolean,
+    val currentUserCanEditAccess: Boolean,
+    val whoCanView: Int,
+    val whoCanEdit: Int,
+    val edited: Int,
+    val created: Int,
+    val editorId: Int,
+    val views: Int,
+    val parent: String,
+    val parent2: String,
+    val source: String,
+    val html: String,
+    val viewUrl: String
+)
+
+data class EventAttachment(override val type: String = "event", val event: Event) : Attachment
+
+data class Event(
+    val id: Int,
+    val time: Int,
+    val memberStatus: Int,
+    val isFavorite: Boolean,
+    val address: String,
+    val text: String,
+    val buttonText: String,
+    val friens: Array<Int>?
+    )
