@@ -1,13 +1,9 @@
 fun main() {
     var array = emptyArray<Attachment>()
-    val photo: Photo = Photo("photo", 1, 1, 1, 1, "фото 1", 800,
-        null, 800, 600)
-    val postedPhoto: PostedPhoto = PostedPhoto("posted_photo", 1, 1, "some url",
-        "some url")
-    array += photo
-    array += postedPhoto
-    array += Event("event", 1, 3600, 1, true, "какой-то адрес", "Встреча",
-        "Встреча",null)
+    array += PhotoAttachment("photo", Photo(1, 1, 1, 1, "фото 1", 800,
+        null, 800, 600))
+    array += EventAttachment("event" , Event(1, 3600, 1, true, "какой-то адрес",
+        "Встреча","Встреча",null))
     val service = WallService()
     val post = service.add(Post(1,10,11,200,300,"First post",4,5,
         false, Comments(3,true,true,true,true),
@@ -142,8 +138,9 @@ interface Attachment {
     val type: String
 }
 
+data class PhotoAttachment(override val type: String = "photo", val photo: Photo) : Attachment
+
 data class Photo(
-    override val type: String,
     val id: Int,
     val albumId: Int,
     val ownerId: Int,
@@ -153,7 +150,7 @@ data class Photo(
     val sizes: Array<SizesPhoto>?,
     val width: Int,
     val height: Int
-    ) : Attachment
+    )
 
 data class SizesPhoto(
     val type: String,
@@ -162,16 +159,18 @@ data class SizesPhoto(
     val height: Int
 )
 
+data class PostedPhotoAttachment(override val type: String = "posted_photo", val postedPhoto: PostedPhoto) : Attachment
+
 data class PostedPhoto(
-    override val type: String,
     val id: Int,
     val ownerId: Int,
     val photo130: String,
     val photo604: String
-    ) : Attachment
+    )
+
+data class AudioAttachment(override val type: String = "audio", val audio: Audio) : Attachment
 
 data class Audio(
-    override val type: String,
     val id: Int,
     val ownerId: Int,
     val artist: String,
@@ -184,10 +183,11 @@ data class Audio(
     val date: Int,
     val noSearch: Boolean,
     val isHd: Boolean
-    ) : Attachment
+    )
+
+data class PageAttachment(override val type: String = "page", val page: Page) : Attachment
 
 data class Page(
-    override val type: String,
     val id: Int,
     val groupId: Int,
     val creatorId: Int,
@@ -205,10 +205,11 @@ data class Page(
     val source: String,
     val html: String,
     val viewUrl: String
-) : Attachment
+)
+
+data class EventAttachment(override val type: String = "event", val event: Event) : Attachment
 
 data class Event(
-    override val type: String,
     val id: Int,
     val time: Int,
     val memberStatus: Int,
@@ -217,4 +218,4 @@ data class Event(
     val text: String,
     val buttonText: String,
     val friens: Array<Int>?
-    ) : Attachment
+    )
